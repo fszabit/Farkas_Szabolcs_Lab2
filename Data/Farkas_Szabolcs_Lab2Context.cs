@@ -24,6 +24,9 @@ namespace Farkas_Szabolcs_Lab2.Data
         public DbSet<Farkas_Szabolcs_Lab2.Models.Category> Category { get; set; }
 
 
+        public DbSet<Farkas_Szabolcs_Lab2.Models.Author> Author { get; set; }
+
+
        
     }
 }
