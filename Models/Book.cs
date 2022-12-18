@@ -36,5 +36,6 @@ StringLength(50, MinimumLength = 3)]*/
         public int? PublisherID { get; set; }
         public Publisher? Publisher { get; set; }
         public ICollection<BookCategory>? BookCategories { get; set; }
+
     }
 }

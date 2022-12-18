@@ -8,19 +8,19 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Farkas_Szabolcs_Lab2.Migrations
+namespace FarkasSzabolcsLab2.Migrations
 {
     [DbContext(typeof(Farkas_Szabolcs_Lab2Context))]
-    partial class Farkas_Szabolcs_Lab2ContextModelSnapshot : ModelSnapshot
+    partial class FarkasSzabolcsLab2ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Author", b =>
                 {
@@ -28,7 +28,7 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -49,15 +49,13 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<int?>("AuthorID")
-                        .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(6,2)");
+                        .HasColumnType("decimal(6, 2)");
 
                     b.Property<int?>("PublisherID")
                         .HasColumnType("int");
@@ -85,7 +83,7 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<int>("BookID")
                         .HasColumnType("int");
@@ -102,13 +100,39 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                     b.ToTable("BookCategory");
                 });
 
+            modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Borrowing", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int?>("BookID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MemberID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReturnDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BookID");
+
+                    b.HasIndex("MemberID");
+
+                    b.ToTable("Borrowing");
+                });
+
             modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Category", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -119,13 +143,42 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Member", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Adress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Member");
+                });
+
             modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Publisher", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("PublisherName")
                         .IsRequired()
@@ -140,9 +193,7 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                 {
                     b.HasOne("Farkas_Szabolcs_Lab2.Models.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorID");
 
                     b.HasOne("Farkas_Szabolcs_Lab2.Models.Publisher", "Publisher")
                         .WithMany("Books")
@@ -172,6 +223,21 @@ namespace Farkas_Szabolcs_Lab2.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Borrowing", b =>
+                {
+                    b.HasOne("Farkas_Szabolcs_Lab2.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookID");
+
+                    b.HasOne("Farkas_Szabolcs_Lab2.Models.Member", "Member")
+                        .WithMany("Borrowings")
+                        .HasForeignKey("MemberID");
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Member");
+                });
+
             modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Author", b =>
                 {
                     b.Navigation("Books");
@@ -185,6 +251,11 @@ namespace Farkas_Szabolcs_Lab2.Migrations
             modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Category", b =>
                 {
                     b.Navigation("BookCategories");
+                });
+
+            modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Member", b =>
+                {
+                    b.Navigation("Borrowings");
                 });
 
             modelBuilder.Entity("Farkas_Szabolcs_Lab2.Models.Publisher", b =>
